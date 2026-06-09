@@ -1,9 +1,10 @@
 # Curadoria de Autores Científicos
 
-Implementação acadêmica do Caso 1 de deduplicação de nomes: diferenças de
-grafia ou diferenças tipográficas.
+Implementação acadêmica da deduplicação de nomes de autores.
 
 ## Escopo
+
+### Caso 1: Diferenças de grafia (tipográficas)
 
 O `NormalizadorNome` prepara nomes para comparação considerando equivalentes:
 
@@ -12,7 +13,15 @@ O `NormalizadorNome` prepara nomes para comparação considerando equivalentes:
 - espaços extras;
 - os apóstrofos `'`, `’`, `‘`, `` ` ``, `´` e `ʼ`.
 
-Os casos 2, 3, 4 e 5 não fazem parte desta implementação.
+### Caso 2: Sobrenome + Iniciais dos nomes
+
+O `DeduplicadorSobrenomeIniciais` reconhece a equivalência entre a versão
+completa de um nome e sua versão abreviada (sobrenome seguido das iniciais dos
+nomes, com ou sem pontos) e unifica os registros para a versão completa
+(ex.: `Seabra A M` -> `Ana de Mattos Seabra`). Reaproveita o `NormalizadorNome`
+do Caso 1 e ignora partículas (`de`, `da`, `do`, ...) na comparação.
+
+Os casos 3, 4 e 5 não fazem parte desta implementação.
 
 ## Tecnologias
 
@@ -34,6 +43,9 @@ Os casos 2, 3, 4 e 5 não fazem parte desta implementação.
     │   └── NormalizadorNome.java
     └── test/java/br/unb/tppe/curadoria
         ├── NormalizadorNomeTest.java
+        ├── DeduplicadorSobrenomeIniciaisTest.java
+        ├── Caso1Suite.java
+        ├── Caso2Suite.java
         └── TodosOsTestesSuite.java
 ```
 
@@ -45,15 +57,18 @@ Execute todos os testes:
 mvn clean test
 ```
 
-Execute somente os testes categorizados como Caso 1:
+Execute somente os testes de um caso por categoria (tag):
 
 ```bash
 mvn test -Dgroups=caso1
+mvn test -Dgroups=caso2
 ```
 
-Execute explicitamente a suíte JUnit Platform:
+Execute as suítes JUnit Platform por caso ou a suíte global:
 
 ```bash
+mvn test -Dtest=Caso1Suite
+mvn test -Dtest=Caso2Suite
 mvn test -Dtest=TodosOsTestesSuite
 ```
 
