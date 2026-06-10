@@ -28,16 +28,38 @@ public class DeduplicadorSobrenomeIniciais {
             throw new NomeNaoEquivalenteException(
                     "Os nomes nao representam o mesmo autor: \"" + nomeA + "\" e \"" + nomeB + "\".");
         }
+        
+        boolean aTemParticulas = temParticulas(nomeA);
+        boolean bTemParticulas = temParticulas(nomeB);
+        
+        if (aTemParticulas && !bTemParticulas) {
+            return nomeA.strip();
+        }
+        if (bTemParticulas && !aTemParticulas) {
+            return nomeB.strip();
+        }
+        
         boolean aAbreviado = ehAbreviado(nomeA);
         boolean bAbreviado = ehAbreviado(nomeB);
-
+        
         if (aAbreviado && !bAbreviado) {
             return nomeB.strip();
         }
         if (bAbreviado && !aAbreviado) {
             return nomeA.strip();
         }
+        
         return nomeA.strip().length() >= nomeB.strip().length() ? nomeA.strip() : nomeB.strip();
+    }
+    
+    private boolean temParticulas(String nome) {
+        String normalizado = normalizador.normalizarParaComparacao(nome).replace(".", "");
+        for (String token : normalizado.split(" ")) {
+            if (PARTICULAS.contains(token)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private NomeEstruturado estruturar(String nome) {
@@ -49,15 +71,22 @@ public class DeduplicadorSobrenomeIniciais {
     }
 
     private NomeEstruturado estruturarAbreviado(List<String> tokens) {
-        String sobrenome = null;
-        List<String> iniciais = new ArrayList<>();
+        List<String> nomesCompletos = new ArrayList<>();
         for (String token : tokens) {
-            if (token.length() == 1) {
-                iniciais.add(token);
-            } else if (!PARTICULAS.contains(token)) {
-                sobrenome = token;
+            if (!PARTICULAS.contains(token) && token.length() > 1) {
+                nomesCompletos.add(token);
             }
         }
+        
+        String sobrenome = nomesCompletos.isEmpty() ? tokens.get(tokens.size() - 1) : nomesCompletos.get(nomesCompletos.size() - 1);
+        
+        List<String> iniciais = new ArrayList<>();
+        for (String token : tokens) {
+            if (!PARTICULAS.contains(token) && !token.equals(sobrenome)) {
+                iniciais.add(token.substring(0, 1));
+            }
+        }
+        
         return new NomeEstruturado(sobrenome, iniciais);
     }
 

@@ -70,4 +70,27 @@ class DeduplicadorSobrenomeIniciaisTest {
                 NomeInvalidoException.class,
                 () -> deduplicador.saoEquivalentes(nome, "Souza C."));
     }
+
+    @ParameterizedTest(name = "[{index}] {0} equivale a {1}")
+    @CsvSource({
+        "'Luiz de Oliveira de Souza', 'Luiz Oliveira Souza'",
+        "'Luiz de Oliveira de Souza', 'Luiz de O. de Souza'",
+        "'Luiz Oliveira Souza', 'Luiz de O. de Souza'"
+    })
+    @Tag("caso3")
+    void deveReconhecerEquivalenciaComParticulasOpcionaisCaso3(String nomeA, String nomeB) {
+        assertTrue(deduplicador.saoEquivalentes(nomeA, nomeB));
+        assertTrue(deduplicador.saoEquivalentes(nomeB, nomeA));
+    }
+
+    @ParameterizedTest(name = "[{index}] unifica para {2}")
+    @CsvSource({
+        "'Luiz Oliveira Souza', 'Luiz de Oliveira de Souza', 'Luiz de Oliveira de Souza'",
+        "'Luiz de O. de Souza', 'Luiz de Oliveira de Souza', 'Luiz de Oliveira de Souza'",
+        "'Luiz Oliveira Souza', 'Luiz de O. de Souza', 'Luiz de O. de Souza'"
+    })
+    @Tag("caso3")
+    void deveUnificarParaVersaoCompletaComParticulasCaso3(String nomeA, String nomeB, String esperado) {
+        assertEquals(esperado, deduplicador.unificar(nomeA, nomeB));
+    }
 }
