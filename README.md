@@ -4,9 +4,9 @@ Implementação acadêmica da deduplicação de nomes de autores.
 
 ## Equipe
 - Hugo Ricardo Souza Bezerra - 180113585
-- [Nome do Membro 2] - [Matrícula 2]
-- [Nome do Membro 3] - [Matrícula 3]
-- [Nome do Membro 4] - [Matrícula 4]
+- Danilo Carvalho Antunes - 211039312
+- Thales Germano - 202017147
+- Israel Thalles Dutra dos Santos - 190014776
 - Marcos Antonio Teles de Castilhos - 221008300
 
 ## Escopo
