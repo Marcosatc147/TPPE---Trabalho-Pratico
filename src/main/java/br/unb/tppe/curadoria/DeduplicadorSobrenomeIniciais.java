@@ -24,35 +24,10 @@ public class DeduplicadorSobrenomeIniciais {
     }
 
     public String unificar(String nomeA, String nomeB) {
-        if (!saoEquivalentes(nomeA, nomeB)) {
-            throw new NomeNaoEquivalenteException(
-                    "Os nomes nao representam o mesmo autor: \"" + nomeA + "\" e \"" + nomeB + "\".");
-        }
-        
-        boolean aTemParticulas = temParticulas(nomeA);
-        boolean bTemParticulas = temParticulas(nomeB);
-        
-        if (aTemParticulas && !bTemParticulas) {
-            return nomeA.strip();
-        }
-        if (bTemParticulas && !aTemParticulas) {
-            return nomeB.strip();
-        }
-        
-        boolean aAbreviado = ehAbreviado(nomeA);
-        boolean bAbreviado = ehAbreviado(nomeB);
-        
-        if (aAbreviado && !bAbreviado) {
-            return nomeB.strip();
-        }
-        if (bAbreviado && !aAbreviado) {
-            return nomeA.strip();
-        }
-        
-        return nomeA.strip().length() >= nomeB.strip().length() ? nomeA.strip() : nomeB.strip();
+        return new UnificadorDeNomes(this, nomeA, nomeB).computar();
     }
     
-    private boolean temParticulas(String nome) {
+    boolean temParticulas(String nome) {
         String normalizado = normalizador.normalizarParaComparacao(nome).replace(".", "");
         for (String token : normalizado.split(" ")) {
             if (PARTICULAS.contains(token)) {
@@ -113,7 +88,7 @@ public class DeduplicadorSobrenomeIniciais {
         return tokens;
     }
 
-    private boolean ehAbreviado(String nome) {
+    boolean ehAbreviado(String nome) {
         return ehAbreviadoTokens(tokenizar(nome));
     }
 
