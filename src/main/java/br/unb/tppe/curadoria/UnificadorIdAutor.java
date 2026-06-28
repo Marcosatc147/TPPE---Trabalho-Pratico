@@ -21,22 +21,26 @@ public class UnificadorIdAutor {
         String nomeUnificado = autorMenorId.nome();
 
         for (Autor registro : registros) {
-            String nomeNormUnificado = normalizador.normalizarParaComparacao(nomeUnificado);
-            String nomeNormRegistro = normalizador.normalizarParaComparacao(registro.nome());
-            
-            if (nomeNormUnificado.equals(nomeNormRegistro)) {
-                continue; 
-            }
-
-            // Se não forem idênticos, delega para a lógica de sobrenome/iniciais (Casos 2 e 3)
-            if (deduplicadorNome.saoEquivalentes(nomeUnificado, registro.nome())) {
-                nomeUnificado = deduplicadorNome.unificar(nomeUnificado, registro.nome());
-            } else {
-                throw new NomeNaoEquivalenteException("Registros contem autores distintos: " 
-                        + nomeUnificado + " e " + registro.nome());
-            }
+            nomeUnificado = unificarNomeComRegistro(nomeUnificado, registro);
         }
 
         return new Autor(autorMenorId.id(), nomeUnificado);
+    }
+
+    private String unificarNomeComRegistro(String nomeUnificado, Autor registro) {
+        String nomeNormUnificado = normalizador.normalizarParaComparacao(nomeUnificado);
+        String nomeNormRegistro = normalizador.normalizarParaComparacao(registro.nome());
+
+        if (nomeNormUnificado.equals(nomeNormRegistro)) {
+            return nomeUnificado;
+        }
+
+        // Se não forem idênticos, delega para a lógica de sobrenome/iniciais (Casos 2 e 3)
+        if (deduplicadorNome.saoEquivalentes(nomeUnificado, registro.nome())) {
+            return deduplicadorNome.unificar(nomeUnificado, registro.nome());
+        }
+
+        throw new NomeNaoEquivalenteException("Registros contem autores distintos: "
+                + nomeUnificado + " e " + registro.nome());
     }
 }
