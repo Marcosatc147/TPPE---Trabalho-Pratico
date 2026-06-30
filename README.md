@@ -52,11 +52,13 @@ O `UnificadorIdAutor` processa um conjunto de múltiplos registros de um mesmo a
     ├── main/java/br/unb/tppe/curadoria
     │   ├── Autor.java
     │   ├── DeduplicadorIniciaisAgrupadas.java
-    │   └── DeduplicadorSobrenomeIniciais.java
+    │   ├── DeduplicadorSobrenomeIniciais.java
     │   ├── NomeInvalidoException.java
     │   ├── NomeNaoEquivalenteException.java
     │   ├── NormalizadorNome.java
-    │   ├── UnificadorIdAutor.java
+    │   ├── RemovedorDeDiacriticos.java
+    │   ├── UnificadorDeNomes.java
+    │   └── UnificadorIdAutor.java
     └── test/java/br/unb/tppe/curadoria
         ├── Caso1Suite.java
         ├── Caso2Suite.java
@@ -127,3 +129,24 @@ feat: implementa normalizacao tipografica de nomes
 refactor: organiza validacao e padroes de normalizacao
 docs: documenta execucao e ciclo TDD
 ```
+
+## Etapa 2: Refatoração (Grupo 9)
+
+Três operações de refatoração aplicadas sobre o código da Etapa 1, cada uma em
+um commit isolado e mantendo a suíte global verde (`mvn test -Dtest=TodosOsTestesSuite`).
+
+### 1. Extrair Método — `UnificadorIdAutor::unificarRegistros()`
+O método foi quebrado em métodos auxiliares menores e mais claros:
+`validarRegistros`, `encontrarAutorDeMenorId`, `consolidarNome` e
+`possuemMesmaFormaNormalizada`.
+
+### 2. Substituir Método por Objeto-Método — `DeduplicadorSobrenomeIniciais::unificar()`
+A lógica de `unificar()` foi movida para a nova classe `UnificadorDeNomes`, que
+recebe `(deduplicador, nomeA, nomeB)` no construtor, transforma as antigas
+variáveis locais (`aTemParticulas`, `bTemParticulas`, `aAbreviado`, `bAbreviado`)
+em atributos e resolve tudo no método `computar()`.
+
+### 3. Extrair Classe — `NormalizadorNome`
+A responsabilidade de remover cedilha e acentos foi extraída para a nova classe
+`RemovedorDeDiacriticos`. `NormalizadorNome` delega a remoção de diacríticos a ela
+e mantém a normalização de espaços, caixa e apóstrofos.
