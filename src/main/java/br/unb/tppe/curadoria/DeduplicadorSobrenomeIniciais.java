@@ -26,7 +26,7 @@ public class DeduplicadorSobrenomeIniciais {
     public String unificar(String nomeA, String nomeB) {
         return new UnificadorDeNomes(this, nomeA, nomeB).computar();
     }
-    
+
     boolean temParticulas(String nome) {
         String normalizado = normalizador.normalizarParaComparacao(nome).replace(".", "");
         for (String token : normalizado.split(" ")) {

@@ -1,6 +1,15 @@
 package br.unb.tppe.curadoria;
 
-public class UnificadorDeNomes {
+/**
+ * Objeto-método extraído de {@link DeduplicadorSobrenomeIniciais#unificar(String, String)}.
+ *
+ * Encapsula a execução da unificação: os parâmetros (nomeA e nomeB) são recebidos
+ * no construtor e as antigas variáveis locais (aTemParticulas, bTemParticulas,
+ * aAbreviado, bAbreviado) tornam-se atributos. O método {@link #computar()} resolve
+ * a lógica de decisão sobre qual versão do nome deve prevalecer.
+ */
+class UnificadorDeNomes {
+
     private boolean aTemParticulas;
     private boolean bTemParticulas;
     private boolean aAbreviado;
@@ -45,9 +54,7 @@ public class UnificadorDeNomes {
         if (bAbreviado && !aAbreviado) {
             return nomeA.strip();
         }
-        
-        return nomeA.strip().length() >= nomeB.strip().length() ? nomeA.strip() : nomeB.strip();
 
+        return nomeA.strip().length() >= nomeB.strip().length() ? nomeA.strip() : nomeB.strip();
     }
-    
 }
