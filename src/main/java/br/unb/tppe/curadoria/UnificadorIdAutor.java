@@ -50,4 +50,21 @@ public class UnificadorIdAutor {
         return normalizador.normalizarParaComparacao(nomeA)
                 .equals(normalizador.normalizarParaComparacao(nomeB));
     }
+
+    private String unificarNomeComRegistro(String nomeUnificado, Autor registro) {
+        String nomeNormUnificado = normalizador.normalizarParaComparacao(nomeUnificado);
+        String nomeNormRegistro = normalizador.normalizarParaComparacao(registro.nome());
+
+        if (nomeNormUnificado.equals(nomeNormRegistro)) {
+            return nomeUnificado;
+        }
+
+        // Se não forem idênticos, delega para a lógica de sobrenome/iniciais (Casos 2 e 3)
+        if (deduplicadorNome.saoEquivalentes(nomeUnificado, registro.nome())) {
+            return deduplicadorNome.unificar(nomeUnificado, registro.nome());
+        }
+
+        throw new NomeNaoEquivalenteException("Registros contem autores distintos: "
+                + nomeUnificado + " e " + registro.nome());
+    }
 }
